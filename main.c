@@ -41,7 +41,7 @@ int main(void)
 			if(check) {
 				int i;
 				for(i=0; i<12; i++) {	
-					m_usb_tx_uint(blobs[0]);
+					m_usb_tx_uint(blobs[i]);
 					m_usb_tx_char(' ');
 				}
 			
