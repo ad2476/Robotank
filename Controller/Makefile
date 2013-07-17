@@ -12,7 +12,7 @@
 # to include code supplied by maevarm, add a .o target
 # tag to the parents line (e.g. "PARENTS = "m_bus.o")
 # --------------------------------------------------------
-MAIN       = pinky.o 
+MAIN       = controller.o 
 CHILDREN   = 
 PARENTS    = 
 
@@ -33,7 +33,7 @@ CLOCK      = 16000000
 COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)
 
 # symbolic targets: 
-all:	pinky.hex
+all:	controller.hex
 
 .c.o:
 	$(COMPILE) -c $< -o $@
@@ -48,22 +48,22 @@ install: flash
 
 flash: all
 	dfu-programmer atmega32u4 erase
-	dfu-programmer atmega32u4 flash pinky.hex
+	dfu-programmer atmega32u4 flash controller.hex
 
 clean:
-	rm -f pinky.hex pinky.elf $(MAIN) $(CHILDREN)
+	rm -f controller.hex controller.elf $(MAIN) $(CHILDREN)
 
 # file targets:
-pinky.elf: $(MAIN) $(CHILDREN) $(PARENTS)
-	$(COMPILE) -o pinky.elf $(MAIN) $(CHILDREN) $(PARENTS) $(LIBRARIES)
+controller.elf: $(MAIN) $(CHILDREN) $(PARENTS)
+	$(COMPILE) -o controller.elf $(MAIN) $(CHILDREN) $(PARENTS) $(LIBRARIES)
 
-pinky.hex: pinky.elf
-	rm -f pinky.hex
-	avr-objcopy -j .text -j .data -O ihex pinky.elf pinky.hex
+controller.hex: controller.elf
+	rm -f controller.hex
+	avr-objcopy -j .text -j .data -O ihex controller.elf controller.hex
 
 # Targets for code debugging and analysis:
-disasm:	pinky.elf
-	avr-objdump -d pinky.elf
+disasm:	controller.elf
+	avr-objdump -d controller.elf
 
 cpp:
-	$(COMPILE) -E pinky.c
+	$(COMPILE) -E controller.c

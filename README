@@ -2,8 +2,8 @@ ROBOTANK by Arun, Will and Sumant
 
 ----------
 
-Pinky: Operated by a human, this controller m2 sends commands to the robot.
-Brain: This is the m2 on the robot that does all the autonomous stuff, as well as processing commands from the controller.
+- Controller: Operated by a human, this controller m2 sends commands to the robot.
+- Brain: This is the m2 on the robot that does all the autonomous stuff, as well as processing commands from the controller.
 
 ----------
 
