@@ -2,6 +2,11 @@ ROBOTANK by Arun, Will and Sumant
 
 ----------
 
+Pinky: Operated by a human, this controller m2 sends commands to the robot.
+Brain: This is the m2 on the robot that does all the autonomous stuff, as well as processing commands from the controller.
+
+----------
+
 See medesign.seas.upenn.edu for more about the project, the m2, the mX board and SAAST.
 
 NOTE: "saast.h" and the Makefile were created by J. Fiene for use with the m2 controller/mX board
