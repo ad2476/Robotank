@@ -1,34 +1,32 @@
-/* USB Com Test
+/* mWii IR Tracking Test
 
    author: Arun Drelich
-   date: 15.07.13 */
+   date: 17.07.13 */
   
 #include "../saast.h"
 
+void flashLEDs() {
+	m_red(TOGGLE);
+	m_green(TOGGLE);
+	m_wait(1000);
+}
+
 int main(void)
 {	
-	m_init();
-	m_usb_init();
-
-	char wii_ok=m_wii_open();
+	unsigned int blobs[12];
 	char check=0;
 	
-	unsigned int blobs[12];	
-		
+	/* Initialise m2 board, USB subsystem and mWii camera */
+	m_init();
+	m_usb_init();
+	
+	while(!m_wii_open())
+		flashLEDs();
+	
+	
+	m_red(ON); // Indicates proper functioning	
 	while(1){
-		m_red(ON); // Indicates board is operating
-		
-		
-		/* Turn on test IR LEDs */
-		m_gpio_out(B0, ON);
-		m_gpio_out(B1, ON);
-		m_gpio_out(B2, ON);
-		m_gpio_out(B3, ON);
-		
-		
-		/* Check that the Wii Blob is working */
-		if(wii_ok)
-			check=m_wii_read(blobs);
+		check=m_wii_read(blobs);
 		
 		/* Start relaying the data over USB */
 		if(m_usb_isconnected()) {
@@ -40,8 +38,11 @@ int main(void)
 				}
 			
 			}
-			else
-				m_usb_tx_uint(wii_ok);
+			else {
+				m_usb_tx_char('E');
+				m_usb_tx_char('r');
+				m_usb_tx_char('r');
+			}
 			
 			m_usb_tx_char('\n');
 		
@@ -50,4 +51,6 @@ int main(void)
 		m_wait(2000);
 		
 	}
+	
+	return 0;
 }
