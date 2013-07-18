@@ -10,8 +10,10 @@
 #define MAXP 1023
 #define MAXS 15
 
-#define X_OFFSET 200
+#define X_LEFT 700
 #define X_CENTER 500
+#define X_RIGHT 300
+#define UNDEF 1023
 
 struct mWii {
 	int x;
@@ -48,6 +50,7 @@ int main(void)
 	unsigned int raw_in[12];
 	char check=0;
 	irCam Blobs[4];
+	int dir;
 	
 	/* Initialise m2 board, USB subsystem and mWii camera */
 	m_init();
@@ -66,29 +69,30 @@ int main(void)
 		/* Pack blobs data into struct */
 		blobPack(raw_in, Blobs);
 		
-		
+		dir=Blobs[0].x; // X coordinate of first blob
 		
 		/* Start relaying the data over USB */
 		if(m_usb_isconnected()) {
-			if(check) {
-				int i;
-				for(i=0; i<12; i++) {
-					if(i==0)
-						m_usb_tx_char('(');
-					else if(i%3==0) {
-						m_usb_tx_string(")(");
-					}
-					
-					m_usb_tx_uint(raw_in[i]);
-					if(i==11)
-						m_usb_tx_char(')');
-					else
-						m_usb_tx_char(' ');
-				}
-			
+			if(check) {					
+				m_usb_tx_string("Blob: ");
+				m_usb_tx_int(Blobs[0].x);
+				m_usb_tx_string(" | ");
+				
+				if(dir==UNDEF)
+					m_usb_tx_string("No target");
+				else if(dir>=X_LEFT)
+					m_usb_tx_string("Left");
+				else if((dir<X_LEFT)&&(dir>X_RIGHT))
+					m_usb_tx_string("Centered");
+				else if(dir==X_CENTER)
+					m_usb_tx_string("On target");
+				else if(dir<X_RIGHT)
+					m_usb_tx_string("Right");
+				else
+					m_usb_tx_string("Error");
 			}
 			else {
-				m_usb_tx_char('E');
+				m_usb_tx_string("Error");
 			}
 			
 			m_usb_tx_char('\n');
