@@ -3,25 +3,7 @@
    author: Arun Drelich
    date: 17.07.13 */
   
-#include "../saast.h"
-
-#define BLOBS 4
-#define ELEMENTS 12
-#define MAXP 1023
-#define MAXS 15
-
-#define X_LEFT 700
-#define X_CENTER 500
-#define X_RIGHT 300
-#define UNDEF 1023
-
-struct mWii {
-	int x;
-	int y;
-	int size;
-};
-
-typedef struct mWii irCam;
+#include "brain.h"
 
 void flashLEDs() {
 	m_red(TOGGLE);
@@ -50,18 +32,20 @@ int main(void)
 	unsigned int raw_in[12];
 	char check=0;
 	irCam Blobs[4];
-	int dir;
+	int dir, rot=0; // Direction of LED, Rotation of servo
 	
 	/* Initialise m2 board, USB subsystem and mWii camera */
-	m_init();
+	mx_init();
 	m_usb_init();
+	mx_servo_init(SERVO);
 	
 	while(!m_wii_open())
 		flashLEDs();
 	
 	m_red(ON);
-	m_green(OFF);	
-	while(1){
+	m_green(OFF);
+	mx_servo(SERVO, rot); // Set servo to 0
+	while(1){		
 		m_red(TOGGLE);
 		m_green(TOGGLE);
 		check=m_wii_read(raw_in);
@@ -80,16 +64,26 @@ int main(void)
 				
 				if(dir==UNDEF)
 					m_usb_tx_string("No target");
-				else if(dir>=X_LEFT)
+				else if(dir>=X_LEFT) {
+					rot+=10;
 					m_usb_tx_string("Left");
+					mx_servo(SERVO, rot);
+				}
 				else if((dir<X_LEFT)&&(dir>X_RIGHT))
 					m_usb_tx_string("Centered");
 				else if(dir==X_CENTER)
 					m_usb_tx_string("On target");
-				else if(dir<X_RIGHT)
+				else if(dir<X_RIGHT) {
+					rot-=10;
 					m_usb_tx_string("Right");
+					mx_servo(SERVO, rot);
+				}
 				else
 					m_usb_tx_string("Error");
+				
+				m_usb_tx_string(" | Servo at ");
+				m_usb_tx_int(rot);
+				m_usb_tx_string(" percent");
 			}
 			else {
 				m_usb_tx_string("Error");
@@ -99,8 +93,10 @@ int main(void)
 		
 		}
 		
-		m_wait(2000);
+		if(rot>100) rot=100;
+		if(rot<0) rot=0;
 		
+		m_wait(2000);
 	}
 	
 	return 0;
