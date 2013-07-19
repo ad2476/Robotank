@@ -1,13 +1,4 @@
-
-#include "saast.h"
-#define LEFT F
-#define RIGHT E
-#define CENTER D
-#define PAN G //pan servo
-
-
-
-
+#include "brain.h"
 
 int main(void)
 {
