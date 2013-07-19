@@ -27,7 +27,6 @@ typedef char int8;
    
 int8 recv_buf[RF_LENGTH];
 int8 send_buf[RF_LENGTH];
-char empty_buf[RF_LENGTH];
 
 // c_addr: controller address
 // b_addr: brain address

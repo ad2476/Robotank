@@ -15,7 +15,14 @@ int main(void) {
 	while(true) {
 		m_wait(1000);
 		
-		
+		if(m_usb_isconnected()) {
+			int i;
+			for(i=0; i<RF_LENGTH; i++) {
+				m_usb_tx_char(recv_buf[i]);
+				m_usb_tx_char(' ');
+			}
+			m_usb_tx_char('\n');
+		}
 	}
 	
 	return 0;
