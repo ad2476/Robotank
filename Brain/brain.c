@@ -1,30 +1,27 @@
-#include "brain.h"
+/* Wireless Test
 
-int main(void)
-{
-    mx_init();
-    mx_servo_init(PAN);
-    int angle = 150;
-	int center, bestAngle;
-	int bestValue = -10;
+   author: Arun Drelich
+   date: 19.07.13 */
+  
+#include "../Robotank.h"
+
+int main(void) {
+	m_init();
+	m_usb_init();
+	m_rf_open(RF_CHANNEL, b_addr, RF_LENGTH);
 	
-	mx_servo(PAN,150);
-	m_wait(10000);
-	while (42)
-	{
-		while (angle>-50)
-		{
-			center = m_adc(CENTER);
-			angle--;
-			m_wait(300);
-			mx_servo(PAN,angle);
-			if (bestValue<center)			
-			{
-				bestValue=center;
-				bestAngle = angle;
-			}
-		}
-		mx_servo(PAN,bestAngle);
+	m_red(ON);
+	
+	while(true) {
+		m_wait(1000);
+		
+		
 	}
-            
+	
+	return 0;
+}
+
+// Interrupt handler to process incoming mRF packets
+ISR(INT2_vect) {
+	m_rf_read(recv_buf, RF_LENGTH);
 }

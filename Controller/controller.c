@@ -5,18 +5,23 @@
   
 #include "../Robotank.h"
 
-int main(void)
-{	
+int main(void) {
 	m_init();
+	m_rf_open(RF_CHANNEL, c_addr, RF_LENGTH);
 	
-	m_red(ON); // Indicates board is operating
-	while(1){
-		/* Turn on test IR LEDs */
-		m_gpio_out(B4, ON);
-		m_gpio_out(B1, ON);
-		m_gpio_out(B2, ON);
-		m_gpio_out(B3, ON);	
+	m_green(ON);
+	
+	packgen(send_buf, DRIVE, 100, 0); // Send a "drive right" command
+	while(true) {
+		m_wait(1000);
+		
+		m_rf_send(b_addr, send_buf, RF_LENGTH);
 	}
 	
 	return 0;
+}
+
+// Interrupt handler to process incoming mRF packets
+ISR(INT2_vect) {
+	m_rf_read(recv_buf, RF_LENGTH);
 }

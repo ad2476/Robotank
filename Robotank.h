@@ -1,29 +1,58 @@
-/* Wireless Test: 19.07.13
+/*  Robotank centralised header
 
-	Arun Drelich */
+	author: Arun Drelich
+	date: 19.07.13     */
 
 #ifndef ROBOTANK_H
-#define ROBOTANK_H
+	#define ROBOTANK_H
 
 #include "saast.h"
 
 #define RF_CHANNEL 4
-#define RF_LENGTH 2
+#define RF_LENGTH 4
+
+/* Mode codes */
+#define DRIVE 0x99
+#define FIRE 0x66
+// #define ACK E7
+
+#define BITMASK 0x04 // 00000100 to mask third bit
+
+typedef unsigned char uint8; // Since a char is an 8-bit, this clarifies
+typedef char int8;
 
 /* Packet structure:
 
-   {bool red, bool green} */
+   {mode, byte 1, byte 2, checksum} */
    
-char recv_buf[RF_LENGTH];
-char send_buf[RF_LENGTH];
+int8 recv_buf[RF_LENGTH];
+int8 send_buf[RF_LENGTH];
+char empty_buf[RF_LENGTH];
 
 // c_addr: controller address
 // b_addr: brain address
-char c_addr = 0xAB, b_addr=0xCD;
+uint8 c_addr = 0xAB, b_addr=0xCD;
 
-// Interrupt handler to process incoming mRF packets
-ISR(INT2_vect) {
-	m_rf_read(recv_buf, RF_LENGTH);
+/* Creates checksum from a packet based on the third bit of its first three bytes */
+/* Eg. {10011001, 01111111, 00000000, 00000000} would generate a checksum of 00000010 */
+/* Returns 0xFF on error */
+int8 genChecksum(int8* packet) {
+	if(sizeof packet!=RF_LENGTH)
+		return 0xFF;
+	
+	return (packet[0] & BITMASK) | ((packet[1] & BITMASK)>>1) | ((packet[2] & BITMASK)>>2);
+}
+
+/* Conveniently packs data into a Robotank packet, includes checksum */
+/* Returns 0 on error, 1 on success */
+int packgen(int8* packet, int8 mode, int8 byte1, int8 byte2) {
+	packet[0]=mode; packet[1]=byte1; packet[2]=byte2; packet[3]=genChecksum(packet);
+	
+	if(packet[3]==0xFF)
+		return 0;
+	
+	return 1;
 }
 
 #endif
+
