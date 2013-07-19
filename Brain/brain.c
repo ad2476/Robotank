@@ -27,8 +27,3 @@ int main(void) {
 	
 	return 0;
 }
-
-// Interrupt handler to process incoming mRF packets
-ISR(INT2_vect) {
-	m_rf_read(recv_buf, RF_LENGTH);
-}
