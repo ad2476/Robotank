@@ -5,9 +5,9 @@ int main(void)
     mx_init();
     mx_servo_init(PAN);
     int angle = 150;
-	int center;
+	int center, bestAngle;
 	int bestValue = -10;
-	int bestAngle;
+	
 	mx_servo(PAN,150);
 	m_wait(10000);
 	while (42)
