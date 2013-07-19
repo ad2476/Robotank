@@ -4,7 +4,10 @@
    Date: 17.07.13
 */
 
-#include "saast.h"
+#ifndef BRAIN_H
+#define BRAIN_H
+
+#include "Robotank.h"
 
 #define LEFT F
 #define RIGHT E
