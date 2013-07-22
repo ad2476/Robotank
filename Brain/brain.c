@@ -3,7 +3,7 @@
    author: Arun Drelich
    date: 19.07.13 */
   
-#include "../Robotank.h"
+#include "brain.h"
 
 int main(void) {
 	int i;
@@ -20,7 +20,7 @@ int main(void) {
 			if(new_packet)
 				new_packet=false;
 			else
-				clearbuf(recv_buf);
+				clearbuf(recv_buf, RF_LENGTH, sizeof (uint8));
 				
 			for(i=0; i<RF_LENGTH; i++) {
 				m_usb_tx_hex(ctoi((uint8)recv_buf[i]));
