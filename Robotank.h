@@ -18,6 +18,9 @@
 
 #define BITMASK 0x04 // 00000100 to mask third bit
 
+#define LEFT 1
+#define RIGHT 2
+
 typedef unsigned char uint8; // Since a char is an 8-bit, this clarifies
 typedef char int8;
 typedef unsigned int uint16;
@@ -45,6 +48,26 @@ uint8 genChecksum(uint8* packet) {
 /* Conveniently packs data into a Robotank packet, includes checksum */
 void packgen(uint8* packet, uint8 mode, uint8 byte1, uint8 byte2) {
 	packet[0]=mode; packet[1]=byte1; packet[2]=byte2; packet[3]=genChecksum(packet);
+}
+
+/* Clears the recv buffer if no new packet has arrived */
+/* Returns 0 on error, 1 on success */
+int clearbuf(void* buffer, size_t bufsize, size_t typesize) {
+	int i;
+	if(buffer==NULL)
+		return 0;
+	
+	if(typesize==sizeof(int)) {
+		for(i=0; i<bufsize; i++)
+			*(((int *)buffer)+i)=0; // Set each element to 0x00
+	}
+	else if(typesize==sizeof(uint8)) {
+		for(i=0; i<bufsize; i++)
+			*(((uint8 *)buffer)+i)=0; // Set each element to 0x00
+	}
+	else return 0;
+	
+	return 1;
 }
 
 #endif
