@@ -1,7 +1,7 @@
 /*  Robotank centralised header
 
 	author: Arun Drelich
-	date: 19.07.13     */
+	date: 22.07.13     */
 
 #ifndef ROBOTANK_H
 	#define ROBOTANK_H
@@ -14,12 +14,17 @@
 /* Mode codes */
 #define DRIVE 0x99
 #define FIRE 0x66
+#define ERR 0xEE
+
 #define TRIGGER 0xE7 // byte 2 MUST be this magic number to fire
 
 #define BITMASK 0x04 // 00000100 to mask third bit
 
+/* Packet indices */
+#define MODE 0
 #define LEFT 1
 #define RIGHT 2
+#define CHKSUM 3
 
 typedef unsigned char uint8; // Since a char is an 8-bit, this clarifies
 typedef char int8;

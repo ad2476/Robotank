@@ -1,7 +1,7 @@
 /* Wireless Test
 
    author: Arun Drelich
-   date: 19.07.13 */
+   date: 22.07.13 */
   
 #include "../Robotank.h"
 
@@ -11,12 +11,8 @@
 #define MSWITCH F1 // Mode switch
 #define TSWITCH F5 // Trigger switch
 
-#define INPUTSIZE 3 // Size of raw_input and motor_speed arrays
-#define TILT 0
-
-uint8 modes[2]={DRIVE, FIRE};
-uint8 byte1[2]={100, 50};
-uint8 byte2[2]={10, TRIGGER};
+#define INPUTSIZE 3 // Size of "raw_input" and "scaled" arrays
+#define TILT 0 // Index of tilt value in arrays, but NOT packet
 
 /* Scales a RAW analog input into a DEST buffer of size "size" */
 /* "destmax" signifies the max value of the destination scale */
@@ -54,12 +50,12 @@ int main(void) {
 			scale(raw_input, scaled, INPUTSIZE, 200);
 			
 			/* Generate packet and send! */
-			packgen(send_buf, DRIVE, scaled[LEFT], scaled[RIGHT]);
+			packgen(send_buf, DRIVE, scaled[LEFT], scaled[RIGHT]);			
 			m_rf_send(b_addr, (char *)send_buf, RF_LENGTH);
 		}
 		else {
-			m_red(ON);
 			m_green(OFF);
+			m_red(ON);
 			
 			/* Get in pot values and scale */
 			raw_input[TILT]=m_adc(TILTPOT);
@@ -70,9 +66,12 @@ int main(void) {
 				fire=TRIGGER;
 			else fire=0;
 			
+			/* Generate packet and send! */
 			packgen(send_buf, FIRE, scaled[TILT], fire);
 			m_rf_send(b_addr, (char *)send_buf, RF_LENGTH);
 		}
+		
+		m_wait(500);
 	}
 	
 	return 0;
