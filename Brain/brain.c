@@ -5,17 +5,6 @@
   
 #include "../Robotank.h"
 
-volatile uint8 new_packet=false;
-
-/* Convert 8-bit char to 16-bit int */
-unsigned int ctoi(uint8 number) {
-	uint8 str[2];
-	str[0]=number;
-	str[1]=0;
-	
-	return (str[1] << 8) | str[0];
-}
-
 int main(void) {
 	int i;
 	m_init();

@@ -20,6 +20,7 @@
 
 typedef unsigned char uint8; // Since a char is an 8-bit, this clarifies
 typedef char int8;
+typedef unsigned int uint16;
 
 /* Packet structure:
 
@@ -28,8 +29,8 @@ typedef char int8;
    {DRIVE, left motor speed, right motor speed, checksum}
    {FIRE, tilt value, trigger (magic number E7 fires), checksum} */
    
-int8 recv_buf[RF_LENGTH];
-int8 send_buf[RF_LENGTH];
+uint8 recv_buf[RF_LENGTH];
+uint8 send_buf[RF_LENGTH];
 
 // c_addr: controller address
 // b_addr: brain address
@@ -37,26 +38,13 @@ uint8 c_addr = 0xAB, b_addr=0xCD;
 
 /* Creates checksum from a packet based on the third bit of its first three bytes */
 /* Eg. {10011001, 01111111, 00000000, 00000000} would generate a checksum of 00000010 */
-int8 genChecksum(int8* packet) {	
+uint8 genChecksum(uint8* packet) {	
 	return (packet[0] & BITMASK) | ((packet[1] & BITMASK)>>1) | ((packet[2] & BITMASK)>>2);
 }
 
 /* Conveniently packs data into a Robotank packet, includes checksum */
-void packgen(int8* packet, int8 mode, int8 byte1, int8 byte2) {
+void packgen(uint8* packet, uint8 mode, uint8 byte1, uint8 byte2) {
 	packet[0]=mode; packet[1]=byte1; packet[2]=byte2; packet[3]=genChecksum(packet);
-}
-
-/* Clears the recv buffer if no new packet has arrived */
-/* Returns 0 on error, 1 on success */
-int clearbuf(int8* buffer) {
-	int i;
-	if(buffer==NULL)
-		return 0;
-	
-	for(i=0; i<RF_LENGTH; i++)
-		buffer[i]=0; // Set each element to 0x00
-	
-	return 1;
 }
 
 #endif
