@@ -19,22 +19,20 @@ int bufEmpty(uint8* buffer, size_t size) {
 
 int main(void) {
 	int i;
-	m_init();
+	mx_init();
 	m_usb_init();
 	m_rf_open(RF_CHANNEL, b_addr, RF_LENGTH);
 	
 	m_red(ON);
-	
 	while(true) {
 		m_wait(1000);
+		/* Set new_packet flag */
+		if(new_packet)
+			new_packet=false;
+		else
+			clearbuf(recv_buf, RF_LENGTH, sizeof (uint8));
 		
-		if(m_usb_isconnected()) {
-			/* Set new_packet flag */
-			if(new_packet)
-				new_packet=false;
-			else
-				clearbuf(recv_buf, RF_LENGTH, sizeof (uint8));
-			
+		if(m_usb_isconnected()) {			
 			/* Process what's in the buffer */
 			if(bufEmpty(recv_buf, RF_LENGTH))
 				m_usb_tx_string("EMPTY BUFFER");
