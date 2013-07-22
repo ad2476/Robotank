@@ -8,9 +8,13 @@ ROBOTANK
 
 *About the protocol:*
 
-Each packet is 4 bytes long and is structured like so: {MODE, byte1, byte2, checksum}. The two MODEs possible are DRIVE and FIRE. When in DRIVE mode, bytes 1 and 2 represent the left and right motor speeds, respectively. In FIRE mode, byte1 represents the tilt of the turret and byte2 carries the TRIGGER command. If byte2 carries the magic number 0xE7, the robot will fire once. The checksum at the end ensures that the packet was not heavily corrupted during transmission, or that a malicious packet was sent to spam the robot.
+Each packet is 4 bytes long and is structured like so:
 
-	NOTE: The checksum generated is not unique.
+	{MODE, byte1, byte2, checksum}
+	
+The two MODEs possible are DRIVE and FIRE. When in DRIVE mode, bytes 1 and 2 represent the left and right motor speeds, respectively. In FIRE mode, byte1 represents the tilt of the turret and byte2 carries the TRIGGER command. If byte2 carries the magic number 0xE7, the robot will fire once. The checksum at the end ensures that the packet was not heavily corrupted during transmission, or that a malicious packet was sent to spam the robot.
+
+NOTE: The checksum generated is not unique.
 
 
 
