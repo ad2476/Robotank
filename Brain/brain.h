@@ -1,7 +1,7 @@
 /* Brain.h 
 
-   Author: William Kayat
-   Date: 18.07.13
+   Author: Arun Drelich
+   Date: 22.07.13
 */
 
 #ifndef BRAIN_H
@@ -18,6 +18,17 @@ uint16 ctoi(uint8 number) {
 	str[1]=0;
 	
 	return (str[1] << 8) | str[0];
+}
+
+/* Interrupt service routine to handle incoming packets */
+ISR(INT2_vect) {
+	m_rf_read((char *)recv_buf, RF_LENGTH);
+	if(recv_buf[CHKSUM]!=genChecksum(recv_buf)) {
+		recv_buf[MODE]=ERR;
+		recv_buf[1]=CHKSUM; // It's a bad checksum
+	}
+		
+	new_packet=true;
 }
 
 #endif
