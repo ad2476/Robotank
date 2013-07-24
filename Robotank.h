@@ -26,6 +26,8 @@
 #define RIGHT 2
 #define CHKSUM 3
 
+#define UPDATE 100 // Update interval in ms
+
 typedef unsigned char uint8; // Since a char is an 8-bit, this clarifies
 typedef char int8;
 typedef unsigned int uint16;
@@ -53,6 +55,15 @@ uint8 genChecksum(uint8* packet) {
 /* Conveniently packs data into a Robotank packet, includes checksum */
 void packgen(uint8* packet, uint8 mode, uint8 byte1, uint8 byte2) {
 	packet[0]=mode; packet[1]=byte1; packet[2]=byte2; packet[3]=genChecksum(packet);
+}
+
+/* Convert 8-bit char to 16-bit int */
+uint16 ctoi(uint8 number) {
+	uint8 str[2];
+	str[0]=number;
+	str[1]=0;
+	
+	return (str[1] << 8) | str[0];
 }
 
 /* Clears the recv buffer if no new packet has arrived */

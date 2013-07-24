@@ -19,7 +19,7 @@
 void scale(int* raw, uint8* dest, size_t size, int destmax) {
 	int i;
 	for(i=0; i<size; i++)
-		dest[i]=(uint8)((float)raw[i]/1024.0)*destmax;
+		dest[i]=(((float)raw[i])/1024.0)*destmax;
 }
 
 int main(void) {
@@ -71,7 +71,7 @@ int main(void) {
 			m_rf_send(b_addr, (char *)send_buf, RF_LENGTH);
 		}
 		
-		m_wait(500);
+		m_wait(UPDATE);
 	}
 	
 	return 0;
