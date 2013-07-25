@@ -9,6 +9,12 @@
 
 #include "../Robotank.h"
 
+#define IR_TOP F
+#define IR_CENTER E
+#define IR_BOTTOM D
+#define PAN H // pan servo
+#define IR_THRESH 10
+
 volatile uint8 new_packet=false; // Flag signifying new packet
 
 /* Checks if a buffer is empty */
@@ -23,7 +29,7 @@ int bufEmpty(uint8* buffer, size_t size) {
 	return 1;
 }
 
-void debug(int* array, size_t size) {
+void debug(uint8* array, size_t size) {
 	int i;
 	if(m_usb_isconnected()) {			
 		/* Process what's in the buffer */
@@ -40,8 +46,8 @@ void debug(int* array, size_t size) {
 		}
 		else {
 			for(i=0; i<size; i++) {
-				//m_usb_tx_int(ctoi((uint8)recv_buf[i]));
-				m_usb_tx_int(array[i]);
+				m_usb_tx_int(ctoi((uint8)array[i]));
+				//m_usb_tx_int(array[i]);
 				m_usb_tx_char(' ');
 			}
 		}
