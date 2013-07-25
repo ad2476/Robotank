@@ -1,14 +1,13 @@
 /* Brain.h 
 
-   Author: Arun Drelich
+   Author: William Kayat
    Date: 17.07.13
 */
 
-#include "saast.h"
+#include "../saast.h"
 
-#define LEFT F
-#define RIGHT E
-#define CENTER D
-#define PAN G //pan servo
+#define IR_LEFT F
+#define IR_CENTER E
+#define IR_RIGHT D
+#define SERVO_PAN G //pan servo
 
-#endif
