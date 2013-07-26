@@ -12,8 +12,15 @@
 #define IR_TOP F
 #define IR_CENTER E
 #define IR_BOTTOM D
-#define PAN H // pan servo
+#define PAN I // pan servo
 #define IR_THRESH 10
+
+// Shooter motor ports
+#define SHOOTER1 A
+#define SHOOTER2 B
+
+// Loader servo
+#define LOADER J
 
 volatile uint8 new_packet=false; // Flag signifying new packet
 

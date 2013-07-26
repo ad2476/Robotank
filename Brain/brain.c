@@ -69,13 +69,16 @@ int main(void) {
 	int i;
 
 	mx_init();
+	// Initialise servos
 	mx_servo_init(PAN);
+	mx_servo_init(LOADER);
 	
 	m_usb_init();
 	m_rf_open(RF_CHANNEL, b_addr, RF_LENGTH);
 	
 	m_red(ON);
 	mx_servo(PAN, 0);
+	mx_servo(LOADER, 50);
 	while(true) {
 		m_wait(UPDATE);
 		/* Set new_packet flag */
@@ -99,17 +102,17 @@ int main(void) {
 				switch(i) {
 					case LMOT:
 						dir=CCW;
-						if(speeds[i]>0x6C)
+						if(speeds[i]>0x67)
 							dir=CW;
 						
-						speeds[i]=scaleSpeed(speeds[i], 0x6C);
+						speeds[i]=scaleSpeed(speeds[i], 0x67);
 						break;
 					case RMOT:
 						dir=CW;
-						if(speeds[i]>0x5D)
+						if(speeds[i]>0x57)
 							dir=CCW;
 						
-						speeds[i]=scaleSpeed(speeds[i], 0x5D);
+						speeds[i]=scaleSpeed(speeds[i], 0x57);
 				}
 					
 				mx_motor(i+1, dir, speeds[i]);		
@@ -123,7 +126,23 @@ int main(void) {
 			
 			targetAcquisition();
 			
-			while(recv_buf[2]!=TRIGGER) ; // Just wait
+			// Wait for the TRIGGER to be pressed
+			while(recv_buf[2]!=TRIGGER) {
+				debug(recv_buf, RF_LENGTH);
+				m_wait(200);
+			}
+			
+			m_gpio_out(SHOOTER1, ON);
+			m_gpio_out(SHOOTER2, ON);
+			
+			m_wait(1000);
+			
+			mx_servo(LOADER, 0);
+			m_wait(500);
+			mx_servo(LOADER, 50);
+			
+			m_gpio_out(SHOOTER1, OFF);
+			m_gpio_out(SHOOTER2, OFF);
 		
 		}
 		
