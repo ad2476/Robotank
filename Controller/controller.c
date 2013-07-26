@@ -57,8 +57,8 @@ int main(void) {
 			m_green(OFF);
 			m_red(ON);
 			
-			/* Get in pot values and scale */
-			raw_input[TILT]=m_adc(TILTPOT);
+			/* Get in joystick values, scale: Use joystick to turn turret */
+			raw_input[TILT]=m_adc(RPOT);
 			scale(raw_input, scaled, INPUTSIZE, 100);
 			
 			trigger_switch=m_gpio_in(TSWITCH);

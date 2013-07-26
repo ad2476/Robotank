@@ -12,7 +12,7 @@
 #define IR_TOP F
 #define IR_CENTER E
 #define IR_BOTTOM D
-#define PAN I // pan servo
+#define PAN J // pan servo
 #define IR_THRESH 10
 
 // Shooter motor ports
@@ -20,7 +20,10 @@
 #define SHOOTER2 B
 
 // Loader servo
-#define LOADER J
+#define LOADER I
+
+// Beacon IR LEDs
+#define BEACON G
 
 volatile uint8 new_packet=false; // Flag signifying new packet
 

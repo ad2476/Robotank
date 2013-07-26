@@ -8,6 +8,8 @@
 #define LMOT 0
 #define RMOT 1
 
+#define MIDPOINT 70
+
 float prop(float x, float n) {
 	if(x>n)
 		return (x-n)/n;
@@ -77,10 +79,11 @@ int main(void) {
 	m_rf_open(RF_CHANNEL, b_addr, RF_LENGTH);
 	
 	m_red(ON);
-	mx_servo(PAN, 0);
-	mx_servo(LOADER, 50);
+	mx_servo(PAN, MIDPOINT);
+	m_gpio_out(BEACON, ON);
 	while(true) {
 		m_wait(UPDATE);
+		mx_servo(LOADER, 50);
 		/* Set new_packet flag */
 		if(new_packet)
 			new_packet=false;
@@ -118,24 +121,44 @@ int main(void) {
 				mx_motor(i+1, dir, speeds[i]);		
 			}
 			
-			mx_servo(PAN, 50);
+			mx_servo(PAN, MIDPOINT);
 		}
 		else if(recv_buf[MODE]==FIRE) {
 			mx_motor(LEFT, CW, 0);
 			mx_motor(RIGHT, CCW, 0);
 			
-			targetAcquisition();
+			//targetAcquisition();
 			
-			// Wait for the TRIGGER to be pressed
+			// Wait for the TRIGGER to be pressed or to be switched back to drive mode
 			while(recv_buf[2]!=TRIGGER) {
+				float tiltdir=MIDPOINT;
+				//m_usb_tx_string("Waiting for trigger...\n");
 				debug(recv_buf, RF_LENGTH);
+				
+				if(recv_buf[1]>90)
+					tiltdir=100;
+				else if(recv_buf[1]<10)
+					tiltdir=-50;
+				else
+					tiltdir=(float)recv_buf[1];
+				
+				mx_servo(PAN, tiltdir);
+				
+				if(recv_buf[MODE]==DRIVE) {
+					m_usb_tx_string("DRIVE\n");
+					break;
+				}
+				
 				m_wait(200);
 			}
+			
+			if(recv_buf[MODE]==DRIVE)
+				continue;
 			
 			m_gpio_out(SHOOTER1, ON);
 			m_gpio_out(SHOOTER2, ON);
 			
-			m_wait(1000);
+			m_wait(3000);
 			
 			mx_servo(LOADER, 0);
 			m_wait(500);
@@ -143,6 +166,8 @@ int main(void) {
 			
 			m_gpio_out(SHOOTER1, OFF);
 			m_gpio_out(SHOOTER2, OFF);
+			
+			m_wait(1000);
 		
 		}
 		

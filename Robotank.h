@@ -8,7 +8,7 @@
 
 #include "saast.h"
 
-#define RF_CHANNEL 4
+#define RF_CHANNEL 3
 #define RF_LENGTH 4
 
 /* Mode codes */
@@ -44,7 +44,7 @@ uint8 send_buf[RF_LENGTH];
 
 // c_addr: controller address
 // b_addr: brain address
-uint8 c_addr = 0xAB, b_addr=0xCD;
+uint8 c_addr = 0x7A, b_addr=0x7C;
 
 /* Creates checksum from a packet based on the third bit of its first three bytes */
 /* Eg. {10011001, 01111111, 00000000, 00000000} would generate a checksum of 00000010 */
